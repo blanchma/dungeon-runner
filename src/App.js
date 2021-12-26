@@ -29,8 +29,14 @@ function App() {
     }
   }, []);
 
+  const isGameOver = () => {
+    if (state.gameOver)
+      return <div className="gameOver">GAME OVER</div>
+
+  }
+
   return (<>
-    <p>{state.gameOver ? 'GAME OVER' : ''}</p>
+    {isGameOver()}
     <Grid
     x={state.x}
     y={state.y}

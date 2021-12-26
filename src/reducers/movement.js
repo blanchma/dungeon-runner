@@ -68,14 +68,20 @@ function tick({ mobs, room }) {
 function collision({ mobs, x, y }) {
 
   if (mobs.some(mob => mob.x === x && mob.y === y)) {
-    return {mobs, x, y, gameOver: true}
+    return {gameOver: true}
   } else {
-    return {mobs, x, y, gameOver: false}
+    return {gameOver: false}
   }
 }
 
 function movementReducer(state, action) {
+
+  if (state.gameOver) {
+    return state;
+  }
+
   let newState;
+
   switch (action.type) {
     case 'UP':
       newState = Object.assign({}, state, moveUp(state) )
