@@ -12,7 +12,7 @@
   height: 400px;
 }
 .cell {
-  color: red;
+  color: blue;
   font-size: 25px;
   border: 1px dotted black;
   width: 50px;
@@ -23,4 +23,7 @@
 }
 .wall {
   background-color: black;
+}
+.mob {
+  background-color: red;
 }

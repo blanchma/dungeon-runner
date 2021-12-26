@@ -1,26 +1,49 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import './App.css'
 import Grid from './components/Grid'
 import useMove from './hooks/useMove'
 import movementReducer from './reducers/movement'
 import Room from './models/room';
 
+const initRoom = new Room();
 const initState = {
-    room: new Room(),
+    room: initRoom,
+    mobs: initRoom.mobs,
     x: 5,
     y: 5,
-    direction: 'UP'
+    direction: 'UP',
+    gameOver: false
 }
 
 function App() {
   const [state, dispatch] = useReducer(movementReducer, initState);
   useMove(dispatch)
 
-  return (<Grid
+  useEffect(() => {
+    const tickId = setInterval(() => {
+      dispatch({ type: 'TICK' })
+    }, 2000)
+
+    return () => {
+      clearInterval(tickId)
+    }
+  }, []);
+
+  const isGameOver = () => {
+    if (state.gameOver)
+      return <div className="gameOver">GAME OVER</div>
+
+  }
+
+  return (<>
+    {isGameOver()}
+    <Grid
     x={state.x}
     y={state.y}
     room={state.room}
-    direction={state.direction} />)
+    mobs={state.mobs}
+      direction={state.direction} />
+    </>)
 }
 
 export default App
