@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Grid.css'
 
 const gridSize = 11;
@@ -14,8 +14,10 @@ const Grid = ({ room, x, y, direction }) => {
         if (x === cellX && y === cellY) {
             arrow = getArrowEntity(direction);
         }
+        const roomCellClass = getCellClass(room, cellX, cellY)
+
         grid.push(
-            <div key={i} className={`cell cell-${cellX}-${cellY} ${room.isWall(cellX,cellY) ? 'wall' : ''}`}>
+            <div key={i} className={`cell cell-${cellX}-${cellY} ${roomCellClass}`}>
                 {arrow}
             </div>
         )
@@ -26,6 +28,16 @@ const Grid = ({ room, x, y, direction }) => {
             {grid}
         </div>
     )
+}
+
+function getCellClass(room, x, y) {
+    if (room.isWall(x, y)) {
+        return 'wall'
+    } else if (room.isMob(x, y)) {
+        return 'mob'
+    } else {
+        return ''
+    }
 }
 
 function getArrowEntity(direction) {

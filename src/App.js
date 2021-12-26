@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import './App.css'
 import Grid from './components/Grid'
 import useMove from './hooks/useMove'
@@ -15,6 +15,16 @@ const initState = {
 function App() {
   const [state, dispatch] = useReducer(movementReducer, initState);
   useMove(dispatch)
+
+  useEffect(() => {
+    const tickId = setInterval(() => {
+      dispatch({ type: 'TICK' })
+    }, 5000)
+
+    return () => {
+      clearInterval(tickId)
+    }
+  }, []);
 
   return (<Grid
     x={state.x}

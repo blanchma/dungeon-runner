@@ -1,5 +1,4 @@
 {
-  "ignoreDuringBuilds": true,
   "extends": [
     "react-app",
     "plugin:prettier/recommended"
