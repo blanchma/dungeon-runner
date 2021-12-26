@@ -25,7 +25,7 @@ class Room {
       this.generateMobs()
       this.generateTraps()
       this.generateTreasures()
-      console.log('grid', this.grid);
+
       this.ready = true;
     }
   }

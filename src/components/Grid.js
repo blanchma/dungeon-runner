@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import './Grid.css'
 
 const gridSize = 11;
 
-const Grid = ({ room, x, y, direction }) => {
+const Grid = (props) => {
     let grid = []
+    const { x, y, room, mobs, direction } = props;
 
     for (let i = 0; i < (gridSize * gridSize); i++) {
         let cellX = i % gridSize
         let cellY = parseInt(i / gridSize)
-        //console.log('x', cellX, 'y', cellY)
         let arrow = ""
         if (x === cellX && y === cellY) {
             arrow = getArrowEntity(direction);
         }
-        const roomCellClass = getCellClass(room, cellX, cellY)
+        const roomCellClass = getCellClass({room, x: cellX, y: cellY, mobs})
 
         grid.push(
             <div key={i} className={`cell cell-${cellX}-${cellY} ${roomCellClass}`}>
@@ -30,10 +30,10 @@ const Grid = ({ room, x, y, direction }) => {
     )
 }
 
-function getCellClass(room, x, y) {
+function getCellClass({ room, x, y, mobs }) {
     if (room.isWall(x, y)) {
         return 'wall'
-    } else if (room.isMob(x, y)) {
+    } else if (mobs.some(mob => mob.x === x && mob.y === y)) {
         return 'mob'
     } else {
         return ''
@@ -62,6 +62,8 @@ function getArrowEntity(direction) {
 
     return arrowDirection;
 }
+
+
 export default Grid
 //https://www.w3schools.com/charsets/ref_utf_geometric.asp
 //▲	9650

@@ -1,4 +1,5 @@
 import Room from "../models/room"
+import Mob from "../models/mob"
 
 const MAX = 10;
 
@@ -58,11 +59,10 @@ function moveRight({ room, x, y }) {
   }
 }
 
-function tick({ room }) {
-  for (const mob of room.mobs) {
-    mob.move();
-  }
-  return { room  }
+function tick({ mobs, room }) {
+  const movedMobs = mobs.map( mob => Mob.move(mob, room) )
+
+  return { mobs: movedMobs };
 }
 
 function movementReducer(state, action) {
