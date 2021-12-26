@@ -65,6 +65,15 @@ function tick({ mobs, room }) {
   return { mobs: movedMobs };
 }
 
+function collision({ mobs, x, y }) {
+
+  if (mobs.some(mob => mob.x === x && mob.y === y)) {
+    return {mobs, x, y, gameOver: true}
+  } else {
+    return {mobs, x, y, gameOver: false}
+  }
+}
+
 function movementReducer(state, action) {
   let newState;
   switch (action.type) {
@@ -87,6 +96,9 @@ function movementReducer(state, action) {
     default:
       throw new Error();
   }
+
+  newState = Object.assign({}, newState, collision(newState) )
+
   return newState;
 }
 

@@ -11,7 +11,8 @@ const initState = {
     mobs: initRoom.mobs,
     x: 5,
     y: 5,
-    direction: 'UP'
+    direction: 'UP',
+    gameOver: false
 }
 
 function App() {
@@ -28,12 +29,15 @@ function App() {
     }
   }, []);
 
-  return (<Grid
+  return (<>
+    <p>{state.gameOver ? 'GAME OVER' : ''}</p>
+    <Grid
     x={state.x}
     y={state.y}
     room={state.room}
     mobs={state.mobs}
-    direction={state.direction} />)
+      direction={state.direction} />
+    </>)
 }
 
 export default App
