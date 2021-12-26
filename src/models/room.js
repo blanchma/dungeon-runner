@@ -1,8 +1,8 @@
 class Room {
-  static max = 10;
+  static max = 11;
 
   constructor({ up = null, down = null, right = null, left = null } = {}) {
-    this.grid = Array(Room.max).fill([]);
+    this.grid = Array(Room.max).fill( Array(Room.max).fill(0) );
     this.ready = false;
 
     this.up = up;
@@ -14,7 +14,7 @@ class Room {
   }
 
   isWall(x, y) {
-    return this.grid[x][y] === 1;
+    return this.grid[y][x] === 1;
   }
 
   //this.grid = [  [1, 1, 1, 1, 1],
@@ -25,79 +25,52 @@ class Room {
 
   generate() {
     if (!this.ready) {
-      // for (const rows of this.grid) {
-      //   console.log('rows', rows)
-      //   if (this.getRandom > 5) {
-      //     rows.splice(0,5,1,1,1,1,1)
-      //   } else {
-      //     rows.splice(0,5,0,0,0,0,0)
-      //   }
-      // }
-
       this.generateBorders()
-      console.log('my grid', this.grid)
       this.generateTraps()
       this.generateTreasures()
+      console.log('grid', this.grid);
     }
   }
 
   generateBorders() {
-    const max = Room.max;
-    let tempBorder;
+    const max = Room.max, half = 5
+    let doors = 0, tempGrid = JSON.parse(JSON.stringify(this.grid));
 
-    if (this.up) {
-      this.topBorder = this.up.bottomBorder;
-    } else {
-      tempBorder = Array(max).fill(1);
-      if (this.getRandom() > 3) {
-        console.log('topBorder has door')
-        tempBorder[max / 2] = 0;
+    this.topBorder = this.up ? this.up.bottomBorder : Array(max).fill(1);
+    this.bottomBorder = this.down ? this.down.topBorder : Array(max).fill(1);
+    this.leftBorder = this.left ? this.left.rightBorder : Array(max).fill(1);
+    this.rightBorder = this.right ? this.right.leftBorder : Array(max).fill(1);
+
+    const borders = [this.topBorder,
+    this.bottomBorder,
+    this.leftBorder,
+    this.rightBorder]
+
+    while (doors < 2) {
+      for (const border of borders) {
+        if (border.indexOf(0) > -1) {
+          doors += 1
+        } else if (this.getRandom() >= 4) {
+          border[half] = 0
+          doors += 1
+        }
       }
-      this.topBorder = tempBorder;
     }
 
-    if (this.down) {
-      this.bottomBorder = this.down.topBorder;
-    } else {
-      tempBorder = Array(max).fill(1);
-      if (this.getRandom() > 3) {
-        console.log('bottomBorder has door')
-        tempBorder[max / 2] = 0;
-      }
-      this.bottomBorder = tempBorder;
-    }
+    tempGrid[0] = this.topBorder;
+    tempGrid[max - 1] = this.bottomBorder;
 
-    if (this.left) {
-      this.leftBorder = this.left.rightBorder;
-    } else {
-      tempBorder = Array(max).fill(1);
-      if (this.getRandom() > 3) {
-        tempBorder[max / 2] = 0;
-        console.log('leftBorder has door')
-      }
-      this.leftBorder = tempBorder;
-    }
+    let i = 0
 
-    if (this.right) {
-      this.rightBorder = this.right.leftBorder;
-    } else {
-      tempBorder = Array(max).fill(1);
-      if (this.getRandom() > 3) {
-        tempBorder[max / 2] = 0;
-        console.log('righBorder has door')
-      }
-      this.rightBorder = tempBorder;
-    }
+    tempGrid.forEach( (row) => {
+      row[0] = this.leftBorder[i];
+      row[max - 1] = this.rightBorder[i];
+      tempGrid[i] = row;
+      i += 1;
+    })
 
-    console.log('borders', this.topBorder, this.bottomBorder, this.leftBorder, this.rightBorder);
+    this.grid = tempGrid;
 
-    this.grid[0] = this.topBorder;
-    this.grid[max - 1] = this.bottomBorder;
-
-    for (let i = 0; i < max; i++) {
-      this.grid[i][0] = this.leftBorder[i];
-      this.grid[i][max - 1] = this.rightBorder[i];
-    }
   }
 
   generateTraps() {
@@ -110,11 +83,15 @@ class Room {
   }
 
   isBorder(x, y) {
-    return this.isLimit(x, y) && !(this.isWall(x, y));
+    return this.isLimit(x, y); //&& !(this.isWall(x, y));
   }
 
   isLimit(x, y) {
-    return (x >= Room.max || y >= Room.max || x < 0 || y < 0) || this.isWall(x, y);
+    return (x >= Room.max || y >= Room.max || x < 0 || y < 0);
+  }
+
+  isBlock(x, y) {
+    return this.isLimit(x,y) || this.isWall(x, y);
   }
 
   //wrong

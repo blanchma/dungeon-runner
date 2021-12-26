@@ -7,16 +7,14 @@ import Room from './models/room';
 
 const initState = {
     room: new Room(),
-    x: 4,
-    y: 4,
+    x: 5,
+    y: 5,
     direction: 'UP'
 }
 
 function App() {
   const [state, dispatch] = useReducer(movementReducer, initState);
   useMove(dispatch)
-
-  console.log('app state', state)
 
   return (<Grid
     x={state.x}

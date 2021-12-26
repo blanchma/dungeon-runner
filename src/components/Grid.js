@@ -1,13 +1,15 @@
 import React from 'react'
 import './Grid.css'
 
-const gridSize = 10;
+const gridSize = 11;
 
 const Grid = ({ room, x, y, direction }) => {
     let grid = []
+
     for (let i = 0; i < (gridSize * gridSize); i++) {
         let cellX = i % gridSize
         let cellY = parseInt(i / gridSize)
+        //console.log('x', cellX, 'y', cellY)
         let arrow = ""
         if (x === cellX && y === cellY) {
             arrow = getArrowEntity(direction);
@@ -21,7 +23,7 @@ const Grid = ({ room, x, y, direction }) => {
 
     return (
         <div className="container">
-        {grid}
+            {grid}
         </div>
     )
 }
