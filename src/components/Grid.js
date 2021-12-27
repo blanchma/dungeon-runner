@@ -12,7 +12,8 @@ const Grid = (props) => {
         let cellY = parseInt(i / gridSize)
         let arrow = ""
         if (x === cellX && y === cellY) {
-            arrow = getArrowEntity(direction);
+            //arrow = getArrowEntity(direction);
+            arrow = getCharacter();
         }
         const roomCellClass = getCellClass({room, x: cellX, y: cellY, mobs, treasure})
 
@@ -31,15 +32,25 @@ const Grid = (props) => {
 }
 
 function getCellClass({ room, x, y, mobs, treasure }) {
+    let aMob = mobs.find(mob => mob.x === x && mob.y === y);
+    console.log('aMob', aMob)
+
     if (room.isWall(x, y)) {
         return 'wall'
-    } else if (mobs.some(mob => mob.x === x && mob.y === y)) {
-        return 'mob'
+    } else if (aMob) {
+        const reversed = (aMob.axis === 'x' && aMob.direction === 1) ||
+        (aMob.axis === 'y' && aMob.direction === -1)
+
+        return `mob ${reversed && 'reversed'}`
     } else if (treasure && treasure.x === x && treasure.y ===y) {
         return 'coin'
     } else {
         return ''
     }
+}
+
+function getCharacter() {
+    return <img className="adventurer" src="/adventurer.png"></img>
 }
 
 function getArrowEntity(direction) {
