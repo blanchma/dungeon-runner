@@ -1,4 +1,5 @@
 import Mob from './mob';
+import Treasure from './treasure';
 
 class Room {
   static max = 11;
@@ -14,6 +15,7 @@ class Room {
     this.level = level;
 
     this.mobs = []
+    this.treasure = null;
     this.current = true;
     this.generate();
   }
@@ -30,13 +32,17 @@ class Room {
     }
   }
 
+  generateTreasures() {
+    const [x, y] = this.getRandomPosition();
+    this.treasure = new Treasure({ x, y });
+  }
+
   generateMobs() {
     let mobsMax = Math.ceil(Math.log(1));
 
     mobsMax = mobsMax === 0 ? 3 : mobsMax;
     mobsMax = mobsMax > 8 ? 8 : mobsMax;
 
-    console.log('mobsMax', mobsMax)
     for (let i = 0; i < mobsMax; i++) {
       const axis = ['x', 'y'][Math.floor(Math.random() * 2)]
 
@@ -99,11 +105,6 @@ class Room {
 
   }
 
-
-  generateTreasures() {
-
-  }
-
   isMob(x, y) {
     return this.mobs.some(mob => {
       return mob.x === x && mob.y === y;
@@ -135,8 +136,11 @@ class Room {
       return parseInt(Math.random() * 10)
   }
 
+
+
   getRandomPosition() {
-    return [parseInt(Math.random() * Room.max), parseInt(Math.random() * Room.max)]
+    return [Math.round(Math.random() * (Room.max - 1) + 1),
+            Math.round(Math.random() * (Room.max - 1) + 1)]
   }
 
 }

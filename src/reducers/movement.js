@@ -7,7 +7,7 @@ function moveUp({ room, x, y }) {
   let state = { direction: 'UP', room }
 
   if (room.isBorder(x, y - 1)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ down: room });
     return {
       ...state,
@@ -15,6 +15,7 @@ function moveUp({ room, x, y }) {
       y: MAX,
       room: newRoom,
       mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
       level: room.level + 1
     }
   } else if (room.isBlock(x, y - 1)) {
@@ -28,7 +29,7 @@ function moveDown({ room, x, y }) {
   let state = { direction: 'DOWN', room }
 
   if (room.isBorder(x, y + 1)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ up: room });
     return {
       ...state,
@@ -36,6 +37,7 @@ function moveDown({ room, x, y }) {
       y: 0,
       room: newRoom,
       mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
       level: room.level + 1
     }
   } else if (room.isBlock(x, y + 1)) {
@@ -49,7 +51,7 @@ function moveLeft({ room, x, y }) {
   let state = { direction: 'LEFT', room }
 
   if (room.isBorder(x - 1, y)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ right: room });
     return {
       ...state,
@@ -57,6 +59,7 @@ function moveLeft({ room, x, y }) {
       y,
       room: newRoom,
       mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
       level: room.level + 1 }
   } else if (room.isBlock(x - 1, y)) {
     return {...state, x, y }
@@ -69,7 +72,7 @@ function moveRight({ room, x, y }) {
   let state = { direction: 'RIGHT', room }
 
   if (room.isBorder(x + 1, y)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ left: room });
     return {
       ...state,
@@ -77,6 +80,7 @@ function moveRight({ room, x, y }) {
       y,
       room: newRoom,
       mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
       level: room.level + 1
     }
   } else if (room.isBlock(x + 1, y)) {
@@ -92,10 +96,12 @@ function tick({ mobs, room }) {
   return { mobs: movedMobs };
 }
 
-function collision({ mobs, x, y }) {
+function collision({ treasure, mobs, x, y, coins }) {
 
   if (mobs.some(mob => mob.x === x && mob.y === y)) {
-    return {gameOver: true}
+    return { gameOver: true }
+  } else if (treasure && treasure.x === x && treasure.y === y) {
+    return {treasure: null, coins: coins + treasure.value }
   } else {
     return {gameOver: false}
   }
