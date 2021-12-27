@@ -13,6 +13,7 @@ const initState = {
     treasure: initRoom.treasure,
     x: 5,
     y: 5,
+    level: initRoom.level,
     coins: 0,
     direction: 'UP',
     gameOver: false
@@ -38,11 +39,12 @@ function App() {
 
   }
 
+  console.log('level', state.room.level)
   return (<>
     {isGameOver()}
 
     <div className="header">
-      <div className="level">Level {state.room.level}</div>
+      <div className="level">Level {state.level}</div>
       <div className="coins">Coins {state.coins}</div>
     </div>
 
