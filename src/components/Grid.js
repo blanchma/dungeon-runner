@@ -5,7 +5,7 @@ const gridSize = 11;
 
 const Grid = (props) => {
     let grid = []
-    const { x, y, room, mobs, direction } = props;
+    const { x, y, room, mobs, direction, treasure } = props;
 
     for (let i = 0; i < (gridSize * gridSize); i++) {
         let cellX = i % gridSize
@@ -14,7 +14,7 @@ const Grid = (props) => {
         if (x === cellX && y === cellY) {
             arrow = getArrowEntity(direction);
         }
-        const roomCellClass = getCellClass({room, x: cellX, y: cellY, mobs})
+        const roomCellClass = getCellClass({room, x: cellX, y: cellY, mobs, treasure})
 
         grid.push(
             <div key={i} className={`cell cell-${cellX}-${cellY} ${roomCellClass}`}>
@@ -30,11 +30,13 @@ const Grid = (props) => {
     )
 }
 
-function getCellClass({ room, x, y, mobs }) {
+function getCellClass({ room, x, y, mobs, treasure }) {
     if (room.isWall(x, y)) {
         return 'wall'
     } else if (mobs.some(mob => mob.x === x && mob.y === y)) {
         return 'mob'
+    } else if (treasure && treasure.x === x && treasure.y ===y) {
+        return 'coin'
     } else {
         return ''
     }

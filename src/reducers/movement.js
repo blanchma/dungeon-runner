@@ -7,9 +7,17 @@ function moveUp({ room, x, y }) {
   let state = { direction: 'UP', room }
 
   if (room.isBorder(x, y - 1)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ down: room });
-    return {...state, x, y: MAX, room: newRoom }
+    return {
+      ...state,
+      x,
+      y: MAX,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x, y - 1)) {
     return {...state, x, y }
   } else {
@@ -21,9 +29,17 @@ function moveDown({ room, x, y }) {
   let state = { direction: 'DOWN', room }
 
   if (room.isBorder(x, y + 1)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ up: room });
-    return {...state, x, y: 0, room: newRoom }
+    return {
+      ...state,
+      x,
+      y: 0,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x, y + 1)) {
     return {...state, x, y }
   } else {
@@ -35,9 +51,16 @@ function moveLeft({ room, x, y }) {
   let state = { direction: 'LEFT', room }
 
   if (room.isBorder(x - 1, y)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ right: room });
-    return {...state, x: MAX, y, room: newRoom }
+    return {
+      ...state,
+      x: MAX,
+      y,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
+      level: room.level + 1 }
   } else if (room.isBlock(x - 1, y)) {
     return {...state, x, y }
   } else {
@@ -49,9 +72,17 @@ function moveRight({ room, x, y }) {
   let state = { direction: 'RIGHT', room }
 
   if (room.isBorder(x + 1, y)) {
-    room.active = false;
+    room.current = false;
     const newRoom = new Room({ left: room });
-    return {...state, x: 0, y, room: newRoom }
+    return {
+      ...state,
+      x: 0,
+      y,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      treasure: newRoom.treasure,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x + 1, y)) {
     return {...state, x, y }
   } else {
@@ -65,10 +96,12 @@ function tick({ mobs, room }) {
   return { mobs: movedMobs };
 }
 
-function collision({ mobs, x, y }) {
+function collision({ treasure, mobs, x, y, coins }) {
 
   if (mobs.some(mob => mob.x === x && mob.y === y)) {
-    return {gameOver: true}
+    return { gameOver: true }
+  } else if (treasure && treasure.x === x && treasure.y === y) {
+    return {treasure: null, coins: coins + treasure.value }
   } else {
     return {gameOver: false}
   }
