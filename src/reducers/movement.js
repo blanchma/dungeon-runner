@@ -9,7 +9,14 @@ function moveUp({ room, x, y }) {
   if (room.isBorder(x, y - 1)) {
     room.active = false;
     const newRoom = new Room({ down: room });
-    return {...state, x, y: MAX, room: newRoom }
+    return {
+      ...state,
+      x,
+      y: MAX,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x, y - 1)) {
     return {...state, x, y }
   } else {
@@ -23,7 +30,14 @@ function moveDown({ room, x, y }) {
   if (room.isBorder(x, y + 1)) {
     room.active = false;
     const newRoom = new Room({ up: room });
-    return {...state, x, y: 0, room: newRoom }
+    return {
+      ...state,
+      x,
+      y: 0,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x, y + 1)) {
     return {...state, x, y }
   } else {
@@ -37,7 +51,13 @@ function moveLeft({ room, x, y }) {
   if (room.isBorder(x - 1, y)) {
     room.active = false;
     const newRoom = new Room({ right: room });
-    return {...state, x: MAX, y, room: newRoom }
+    return {
+      ...state,
+      x: MAX,
+      y,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      level: room.level + 1 }
   } else if (room.isBlock(x - 1, y)) {
     return {...state, x, y }
   } else {
@@ -51,7 +71,14 @@ function moveRight({ room, x, y }) {
   if (room.isBorder(x + 1, y)) {
     room.active = false;
     const newRoom = new Room({ left: room });
-    return {...state, x: 0, y, room: newRoom }
+    return {
+      ...state,
+      x: 0,
+      y,
+      room: newRoom,
+      mobs: newRoom.mobs,
+      level: room.level + 1
+    }
   } else if (room.isBlock(x + 1, y)) {
     return {...state, x, y }
   } else {

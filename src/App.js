@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const tickId = setInterval(() => {
       dispatch({ type: 'TICK' })
-    }, 2000)
+    }, 500)
 
     return () => {
       clearInterval(tickId)
