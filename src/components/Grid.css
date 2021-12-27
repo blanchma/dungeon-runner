@@ -43,14 +43,14 @@
 }
 
 .mob {
-  background-image: url('/monster.png');
+  background-image: url('../assets/monster.png');
   background-repeat: no-repeat;
   background-size: 50px;
   background-position: center;
 }
 
 .coin {
-  background-image: url('/treasure2.png');
+  background-image: url('../assets/treasure2.png');
   background-repeat: no-repeat;
   background-size: 50px;
   background-position: center;

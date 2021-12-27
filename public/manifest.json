@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Dungeon Runner",
+  "name": "Collect as many treasures as you can before the dungeon claim your life",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,15 +8,11 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "adventurer.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "100x100"
     }
+
   ],
   "start_url": ".",
   "display": "standalone",
