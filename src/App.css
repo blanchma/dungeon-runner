@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Pushster&display=swap');
+
 .gameOver {
   position: fixed;
   top: 50%;
@@ -9,4 +11,32 @@
   line-height: 50px;
   vertical-align: middle;
   text-align: center;
+}
+
+.header {
+  font-family: 'Pushster', sans-serif;
+  width: 40%;
+  margin: 0 auto;
+  height: 40px;
+  line-height: 40px;
+  font-size: 150%;
+  font-weight: 100;
+}
+
+.coins {
+  display: inline;
+  float: right;
+  text-align: left;
+}
+
+.coins img {
+  height: 25px;
+  width: 25px;
+  vertical-align: middle;
+}
+
+.level {
+  display: inline;
+  float: left;
+  text-align: left;
 }

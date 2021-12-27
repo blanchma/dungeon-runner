@@ -45,7 +45,7 @@ function App() {
 
     <div className="header">
       <div className="level">Level {state.level}</div>
-      <div className="coins">Coins {state.coins}</div>
+      <div className="coins"><img src="/treasure.png"></img>Coins {state.coins}</div>
     </div>
 
     <Grid
