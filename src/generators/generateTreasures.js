@@ -1,4 +1,4 @@
-import randomPosition from "../helpers/randomPosition";
+import { randomPosition } from "../helpers/randomPosition";
 import Treasure from "../models/treasure";
 
 export default function generateTreasures(room) {
