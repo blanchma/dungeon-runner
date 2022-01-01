@@ -24,40 +24,9 @@ class Room {
   generate() {
     if (!this.ready) {
       this.generateBorders()
-      this.generateMobs()
       this.generateTraps()
-      this.generateTreasures()
 
       this.ready = true;
-    }
-  }
-
-  generateTreasures() {
-    const [x, y] = this.getRandomPosition();
-    this.treasure = new Treasure({ x, y });
-  }
-
-  generateMobs() {
-    let mobsMax = Math.ceil(Math.log(1));
-
-    mobsMax = mobsMax === 0 ? 3 : mobsMax;
-    mobsMax = mobsMax > 8 ? 8 : mobsMax;
-
-    for (let i = 0; i < mobsMax; i++) {
-      const axis = ['x', 'y'][Math.floor(Math.random() * 2)]
-
-      let x, y;
-      if (axis === 'x') {
-        y = [1, 2, 3, 4, 6, 7, 8, 9][Math.ceil(Math.random() * 7)]
-        x = [1, 9][Math.floor(Math.random() * 2)]
-      } else {
-        x = [1, 2, 3, 4, 6, 7, 8, 9][Math.ceil(Math.random() * 7)]
-        y = [1, 9][Math.floor(Math.random() * 2)]
-      }
-
-      const newMob = new Mob({ room: this, x, y, speed: 500, axis });
-      console.log('newMob', newMob)
-      this.mobs.push(newMob)
     }
   }
 
@@ -76,10 +45,11 @@ class Room {
     this.rightBorder]
 
     while (doors < 2) {
+      const randomNumber = parseInt(Math.random() * 10)
       for (const border of borders) {
         if (border.indexOf(0) > -1) {
           doors += 1
-        } else if (this.getRandom() >= 4) {
+        } else if (randomNumber >= 4) {
           border[half] = 0
           doors += 1
         }
@@ -131,18 +101,6 @@ class Room {
   isCorner(x, y) {
     return (x === 0 && y === x + 5) || (y === 0 && x === y + 5)
   }
-
-  getRandom() {
-      return parseInt(Math.random() * 10)
-  }
-
-
-
-  getRandomPosition() {
-    return [Math.round(Math.random() * (Room.max - 2) + 1),
-            Math.round(Math.random() * (Room.max - 2) + 1)]
-  }
-
 }
 
 export default Room;
