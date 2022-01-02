@@ -17,6 +17,8 @@ function useKeyboard(dispatch) {
       case 'd':
       case 'ArrowRight':
         return dispatch({ type: 'RIGHT' })
+      case 'p':
+        return dispatch({ type: 'PAUSE' })
       default:
         break
     }

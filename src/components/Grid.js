@@ -1,25 +1,20 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { Children, createElement, useCallback, useEffect } from 'react'
 import './Grid.css'
 
 const gridSize = 11;
 
 const Grid = (props) => {
     let grid = []
-    const { x, y, room, mobs, direction, treasure } = props;
-
+    const { room, mobs, treasure, player } = props;
     for (let i = 0; i < (gridSize * gridSize); i++) {
         let cellX = i % gridSize
         let cellY = parseInt(i / gridSize)
-        let arrow = ""
-        if (x === cellX && y === cellY) {
-            //arrow = getArrowEntity(direction);
-            arrow = getCharacter(direction);
-        }
-        const roomCellClass = getCellClass({room, x: cellX, y: cellY, mobs, treasure})
+        const cellContent = getCellContent({x: cellX, y: cellY, room, player, mobs, treasure})
+        const cellClass = getCellClass({x: cellX, y: cellY, room})
 
         grid.push(
-            <div key={i} className={`cell cell-${cellX}-${cellY} ${roomCellClass}`}>
-                {arrow}
+            <div key={i} className={`cell cell-${cellX}-${cellY} ${cellClass}`}>
+                {Children.toArray(cellContent)}
             </div>
         )
     }
@@ -31,50 +26,45 @@ const Grid = (props) => {
     )
 }
 
-function getCellClass({ room, x, y, mobs, treasure }) {
-    let aMob = mobs.find(mob => mob.x === x && mob.y === y);
+function getCellContent({ x, y, room, player, mobs, treasure }) {
+    const content = []
+    if (player.x === x && player.y === y) {
+        content.push( createElement("div", { className: "adventurer" }) )
+    }
 
-    if (room.isWall(x, y)) {
-        return 'wall'
-    } else if (aMob) {
+    let aMob = mobs.find(mob => mob.x === x && mob.y === y);
+    if (aMob) {
         const reversed = (aMob.axis === 'x' && aMob.direction === 1) ||
-        (aMob.axis === 'y' && aMob.direction === -1)
-        return `floor mob ${reversed && 'reversed'}`
-    } else if (treasure && treasure.x === x && treasure.y ===y) {
-        return 'floor coin'
+            (aMob.axis === 'y' && aMob.direction === -1)
+        content.push( createElement("div", { className: `mob ${reversed ? 'reversed' : null}` }) )
+    }
+
+    if (treasure && treasure.x === x && treasure.y === y) {
+        content.push( createElement("div", { className: `coin coin-${treasure.number}` }) )
+    }
+
+    if (content.length > 0) {
+        //console.log(content)
+    }
+    return content;
+}
+
+function getCellClass({ room, x, y }) {
+    if (room.isTopCorner(x, y) && room.isLeftWall(x, y)) {
+        return 'wall h-wall top-wall left-wall'
+    } else if (room.isTopCorner(x, y) && room.isRightWall(x, y)) {
+        return 'wall h-wall top-wall right-wall'
+    } else if (room.isHorizontalWall(x, y)) {
+        return 'wall h-wall'
+    } else if (room.isLeftWall(x, y)) {
+        return 'wall v-wall left-wall'
+    } else if (room.isRightWall(x, y)) {
+        return 'wall v-wall right-wall'
+
     } else {
         return 'floor'
     }
 }
-
-function getCharacter(direction) {
-    const reversed = direction === 'DOWN' || direction === 'LEFT';
-    return <img className={`adventurer ${reversed && 'reversed'} `} src="/adventurer.png"></img>
-}
-
-function getArrowEntity(direction) {
-    let arrowDirection;
-
-    switch (direction) {
-        case 'UP':
-            arrowDirection = <>&#9650;</>
-            break;
-        case 'DOWN':
-            arrowDirection = <>&#9660;</>
-            break;
-        case 'LEFT':
-            arrowDirection = <>&#9664;</>
-            break;
-        case 'RIGHT':
-            arrowDirection = <>&#9654;</>
-            break;
-        default:
-            arrowDirection = <>&#9650;</>
-    }
-
-    return arrowDirection;
-}
-
 
 export default Grid
 //https://www.w3schools.com/charsets/ref_utf_geometric.asp

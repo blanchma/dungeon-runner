@@ -1,8 +1,8 @@
 import Room from "../models/room"
 
 export const randomPosition = () => {
-    return [Math.round(Math.random() * (Room.max - 2) + 1),
-            Math.round(Math.random() * (Room.max - 2) + 1)]
+    return [Math.ceil(Math.random() * (Room.max - 2) ),
+            Math.ceil(Math.random() * (Room.max - 2) )]
 }
 
 export const randomDirection = () => {

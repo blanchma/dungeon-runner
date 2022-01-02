@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Pushster&display=swap');
 
+body {
+  background-color: ;
+}
+
 .gameOver {
   position: fixed;
   top: 50%;
@@ -8,7 +12,7 @@
   width: 30%;
   background-color: grey;
   border: 1px solid red;
-  line-height: 50px;
+  line-height: 55px;
   vertical-align: middle;
   text-align: center;
 }
@@ -30,8 +34,8 @@
 }
 
 .coins img {
-  height: 25px;
-  width: 25px;
+  height: 30px;
+  width: 30px;
   vertical-align: middle;
 }
 

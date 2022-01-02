@@ -50,8 +50,8 @@ export default function generateMobs(room, level = 1) {
   mobsMax = mobsMax > 10 ? 10 : mobsMax;
 
   const allPositions = getAllPossiblePositions();
-  console.log('allPositions', allPositions)
-  const axis = [0,1]
+
+  const axis = [0, 1]
   for (let i = 0; i < mobsMax; i++) {
     const randomPosition = allPositions[i % 4].pop()
     const direction = randomDirection()

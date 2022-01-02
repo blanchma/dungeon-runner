@@ -6,54 +6,104 @@
     'a a a a a a a a a a a'
     'b b b b b b b b b b b'
     'c c c c c c c c c c c';
-  grid-template-columns: 50px;
-  grid-template-rows: 50px;
+  grid-template-columns: 55px 55px;
+  grid-template-rows: 55px 55px;
   width: 400px;
   height: 400px;
   grid-gap: 0px;
   margin: 0 30% 2rem 30%;
+  background-color: transparent;
 }
 
 .cell {
   color: blue;
-  font-size: 25px;
-  width: 50px;
-  height: 50px;
+  font-size: 26px;
+  width: 55px;
+  height: 55px;
   vertical-align: middle;
   text-align: center;
-  line-height: 50px;
+  line-height: 55px;
   margin: 0;
   grid-gap: 0px;
+  background-color: transparent;
 }
 
 .cell::after {
   width: 20px;
   display: block;
   content: '';
-  background-color: black !important;
+  background-color: transparent;
 }
 
 .floor {
-  border: rgba(161, 161, 161, 0.6) 1px dotted;
+  border: none;
+  background-image: url('../assets/land.png');
+  background-repeat: no-repeat;
+  background-size: 55px;
+}
+
+.h-wall {
+  background-image: url('../assets/walls/wall_1.png'), url('../assets/land.png');
+  background-repeat: no-repeat, repeat;
+  background-size: 55px 55px;
+}
+
+.v-wall {
+  background-image: url('../assets/walls/wall_3.png'), url('../assets/land.png');
+  background-color: transparent;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 26px 55px, 55px;
+}
+
+.left-wall {
+  background-position: left;
+}
+
+.right-wall {
+  background-position: right;
+}
+
+.top-wall {
+  background-image: url('../assets/walls/wall_3.png'),
+    url('../assets/walls/wall_1.png'), url('../assets/land.png');
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 26px 55px, 55px, 55px;
 }
 
 .wall {
-  border: 1px black solid;
-  background-color: black;
+  border: none;
 }
 
 .mob {
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
   background-image: url('../assets/monster.png');
   background-repeat: no-repeat;
-  background-size: 50px;
+  background-size: 55px;
   background-position: center;
+  background-color: transparent;
+}
+
+.coin-1 {
+  background-image: url('../assets/decor_23.png');
+}
+.coin-2 {
+  background-image: url('../assets/decor_24.png');
+}
+
+.coin-3 {
+  background-image: url('../assets/decor_25.png');
 }
 
 .coin {
-  background-image: url('../assets/treasure2.png');
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
   background-repeat: no-repeat;
-  background-size: 50px;
+  background-size: 55px;
   background-position: center;
+  background-color: transparent;
 }
 
 .reversed {
@@ -66,9 +116,11 @@
 }
 
 .adventurer {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  vertical-align: middle;
-  text-align: center;
+  background-image: url('../assets/character/1_IDLE_000.png');
+  background-repeat: no-repeat;
+  background-size: 55px;
+  background-position: center;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
 }

@@ -20,12 +20,9 @@ class Room {
     this.generate();
   }
 
-
   generate() {
     if (!this.ready) {
       this.generateBorders()
-      this.generateTraps()
-
       this.ready = true;
     }
   }
@@ -71,10 +68,6 @@ class Room {
     this.grid = tempGrid;
   }
 
-  generateTraps() {
-
-  }
-
   isMob(x, y) {
     return this.mobs.some(mob => {
       return mob.x === x && mob.y === y;
@@ -83,6 +76,26 @@ class Room {
 
   isWall(x, y) {
     return this.grid[y][x] === 1;
+  }
+
+  isHorizontalWall(x, y) {
+    return this.isWall(x, y) && (y === 0 || y === Room.max -1)
+  }
+
+  isVerticalWall(x, y) {
+    return this.isWall(x,y) && (x === 0 || x === Room.max -1)
+  }
+
+  isLeftWall(x, y) {
+    return this.isWall(x,y) && x === 0
+  }
+
+  isRightWall(x, y) {
+    return this.isWall(x,y) &&  x === Room.max -1
+  }
+
+  isTopCorner(x, y) {
+    return (x === 0 && y === 0) || (x === 10 && y === 0)
   }
 
   isBorder(x, y) {

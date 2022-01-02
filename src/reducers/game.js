@@ -6,7 +6,8 @@ import generateTreasures from '../generators/generateTreasures'
 const MAX = 10
 
 function checkCollision(state) {
-  const { treasure, mobs, x, y, coins, room } = state
+  const { treasure, mobs, player, coins, room } = state
+  const { x, y } = player;
 
   if (mobs.some((mob) => mob.x === x && mob.y === y)) {
     return { ...state, gameOver: true }
@@ -24,8 +25,9 @@ function tick({ mobs, room }) {
   return { mobs: movedMobs }
 }
 
-function moveUp({ room, x, y }) {
-  let state = { direction: 'UP', room }
+function moveUp({ room, player }) {
+  const direction = { direction: 'UP' }
+  const { x, y } = player;
 
   if (room.isBorder(x, y - 1)) {
     room.current = false
@@ -38,23 +40,23 @@ function moveUp({ room, x, y }) {
     }
 
     return {
-      ...state,
-      x,
-      y: MAX,
+      direction,
+      player: { x, y: MAX },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x, y - 1)) {
-    return { ...state, x, y }
+    return { direction, player: { x, y } }
   } else {
-    return { ...state, x, y: y - 1 }
+    return { direction, player: { x, y: y - 1 } }
   }
 }
 
-function moveDown({ room, x, y }) {
-  let state = { direction: 'DOWN', room }
+function moveDown({ room, player }) {
+  const direction = { direction: 'DOWN' }
+  const { x, y } = player;
 
   if (room.isBorder(x, y + 1)) {
     room.current = false
@@ -67,23 +69,23 @@ function moveDown({ room, x, y }) {
     }
 
     return {
-      ...state,
-      x,
-      y: 0,
+      direction,
+      player: { x, y: 0 },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x, y + 1)) {
-    return { ...state, x, y }
+    return { direction, player: { x, y } }
   } else {
-    return { ...state, x, y: y + 1 }
+    return { direction, player: { x, y: y + 1 } }
   }
 }
 
-function moveLeft({ room, x, y }) {
-  let state = { direction: 'LEFT', room }
+function moveLeft({ room, player }) {
+  const direction = { direction: 'LEFT' }
+  const { x, y } = player;
 
   if (room.isBorder(x - 1, y)) {
     room.current = false
@@ -96,23 +98,23 @@ function moveLeft({ room, x, y }) {
     }
 
     return {
-      ...state,
-      x: MAX,
-      y,
+      direction,
+      player: { x: MAX, y },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x - 1, y)) {
-    return { ...state, x, y }
+    return { direction, player: { x, y } }
   } else {
-    return { ...state, x: x - 1, y }
+    return { direction, player: { x: x - 1, y } }
   }
 }
 
-function moveRight({ room, x, y }) {
-  let state = { direction: 'RIGHT', room }
+function moveRight({ room, player }) {
+  const direction = { direction: 'RIGHT' }
+  const { x, y } = player;
 
   if (room.isBorder(x + 1, y)) {
     room.current = false
@@ -125,34 +127,45 @@ function moveRight({ room, x, y }) {
     }
 
     return {
-      ...state,
-      x: 0,
-      y,
+      direction,
+      player: { x: 0, y },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x + 1, y)) {
-    return { ...state, x, y }
+    return { direction, player: { x, y } }
   } else {
-    return { ...state, x: x + 1, y }
+    return { direction, player: { x: x + 1, y } }
   }
 }
 
 function newGame(state) {
   const initRoom = new Room()
+
   return {
+    pause: false,
     room: initRoom,
     mobs: generateMobs(initRoom),
     treasure: generateTreasures(initRoom),
-    x: 5,
-    y: 5,
+    player: {x: 5, y: 5, direction: 'UP' },
     level: initRoom.level,
     coins: 0,
-    direction: 'UP',
     gameOver: false,
+    tickId: state.tickId
   }
+}
+
+function pause({tickId}) {
+  console.log('pause', pause, ' TICK', tickId)
+  if (tickId) {
+    clearInterval(tickId)
+    return {pause: true}
+  } else {
+    return {pause: false}
+  }
+
 }
 
 function gameReducer(state, action) {
@@ -160,8 +173,12 @@ function gameReducer(state, action) {
     return state
   }
   switch (action.type) {
+
+    case 'PAUSE':
+      return { ...state, ...pause(state) };
+      break;
     case 'NEW_GAME':
-      return { ...state, ...newGame(state) };
+      return { ...state, ...newGame({ ...state, ...action.payload }) };
       break
     case 'UP':
       return checkCollision({ ...state, ...moveUp(state) })
