@@ -30,7 +30,7 @@ function getCellContent({ x, y, room, player, mobs, treasure }) {
     const content = []
     if (player.x === x && player.y === y) {
         const reversed = player.direction === 'UP' || player.direction === 'LEFT';
-        const playerState = player.dead ? 'dead' : player.running ? 'running': 'idle';
+        const playerState = player.dead ? 'dead' : player.running ? 'idle': 'idle';
 
         content.push(createElement("div", { className: `adventurer ${reversed ? 'reversed' : ''} ${playerState}` }))
     }
