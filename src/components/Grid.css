@@ -175,13 +175,14 @@
   -webkit-animation-fill-mode: forwards;
 }
 
+/*
 .running {
   animation-direction: normal;
   animation-iteration-count: 1;
   animation-duration: 1s;
   animation-name: running-wizard;
   background-size: 55px;
-}
+}*/
 
 .idle {
   animation-direction: alternate;
