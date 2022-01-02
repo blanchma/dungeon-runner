@@ -29,23 +29,23 @@ const Grid = (props) => {
 function getCellContent({ x, y, room, player, mobs, treasure }) {
     const content = []
     if (player.x === x && player.y === y) {
-        content.push( createElement("div", { className: "adventurer" }) )
+        const reversed = player.direction === 'UP' || player.direction === 'LEFT';
+        const playerState = player.dead ? 'dead' : player.running ? 'running': 'idle';
+
+        content.push(createElement("div", { className: `adventurer ${reversed ? 'reversed' : ''} ${playerState}` }))
     }
 
     let aMob = mobs.find(mob => mob.x === x && mob.y === y);
     if (aMob) {
         const reversed = (aMob.axis === 'x' && aMob.direction === 1) ||
             (aMob.axis === 'y' && aMob.direction === -1)
-        content.push( createElement("div", { className: `mob ${reversed ? 'reversed' : null}` }) )
+        content.push( createElement("div", { className: `mob ${reversed ? 'reversed' : ''}` }) )
     }
 
     if (treasure && treasure.x === x && treasure.y === y) {
         content.push( createElement("div", { className: `coin coin-${treasure.number}` }) )
     }
 
-    if (content.length > 0) {
-        //console.log(content)
-    }
     return content;
 }
 

@@ -1,3 +1,51 @@
+@keyframes idle-wizard {
+  0% {
+    background-image: url('../assets/character/1_IDLE_000.png');
+  }
+  25% {
+    background-image: url('../assets/character/1_IDLE_001.png');
+  }
+  50% {
+    background-image: url('../assets/character/1_IDLE_002.png');
+  }
+  75% {
+    background-image: url('../assets/character/1_IDLE_003.png');
+  }
+  100% {
+    background-image: url('../assets/character/1_IDLE_004.png');
+  }
+}
+
+@keyframes running-wizard {
+  0% {
+    background-image: url('../assets/character/3_RUN_000.png');
+  }
+  50% {
+    background-image: url('../assets/character/3_RUN_001.png');
+  }
+  100% {
+    background-image: url('../assets/character/3_RUN_004.png');
+  }
+}
+
+@keyframes dead-wizard {
+  0% {
+    background-image: url('../assets/character/7_DIE_000.png');
+  }
+  25% {
+    background-image: url('../assets/character/7_DIE_002.png');
+  }
+  50% {
+    background-image: url('../assets/character/7_DIE_005.png');
+  }
+  75% {
+    background-image: url('../assets/character/7_DIE_008.png');
+  }
+  100% {
+    background-image: url('../assets/character/7_DIE_011.png');
+  }
+}
+
 .container {
   height: 90vh;
   margin: 2rem 30%;
@@ -8,7 +56,7 @@
     'c c c c c c c c c c c';
   grid-template-columns: 55px 55px;
   grid-template-rows: 55px 55px;
-  width: 400px;
+  width: 40%;
   height: 400px;
   grid-gap: 0px;
   margin: 0 30% 2rem 30%;
@@ -115,10 +163,36 @@
   transform: rotate(90deg);
 }
 
-.adventurer {
-  background-image: url('../assets/character/1_IDLE_000.png');
-  background-repeat: no-repeat;
+.dead {
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+  animation-name: dead-wizard;
+  background-size: 60px;
+  animation-timing-function: ease;
+  -webkit-animation-timing-function: ease;
+
+  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+}
+
+.running {
+  animation-direction: normal;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+  animation-name: running-wizard;
   background-size: 55px;
+}
+
+.idle {
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-duration: 2s;
+  animation-name: idle-wizard;
+  background-size: 55px;
+}
+
+.adventurer {
+  background-repeat: no-repeat;
   background-position: center;
   width: 55px;
   height: 55px;

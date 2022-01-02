@@ -10,7 +10,7 @@ function checkCollision(state) {
   const { x, y } = player;
 
   if (mobs.some((mob) => mob.x === x && mob.y === y)) {
-    return { ...state, gameOver: true }
+    return { ...state, gameOver: true, player: {...player, dead: true} }
   } else if (treasure && treasure.x === x && treasure.y === y) {
     room.treasure = null
     return { ...state, treasure: null, coins: coins + treasure.value }
@@ -19,14 +19,15 @@ function checkCollision(state) {
   }
 }
 
-function tick({ mobs, room }) {
+function tick({ mobs, room, player }) {
   const movedMobs = mobs.map((mob) => Mob.move(mob, room))
+  player = { ...player, running: false}
 
-  return { mobs: movedMobs }
+  return { mobs: movedMobs, player };
 }
 
 function moveUp({ room, player }) {
-  const direction = { direction: 'UP' }
+  const direction = 'UP'
   const { x, y } = player;
 
   if (room.isBorder(x, y - 1)) {
@@ -36,26 +37,26 @@ function moveUp({ room, player }) {
     if (room.up) {
       newRoom = room.up
     } else {
-      newRoom = new Room({ down: room, level: room.level + 1 })
+      newRoom = new Room({ down: room, level: room.level + 1, running: true })
     }
 
     return {
       direction,
-      player: { x, y: MAX },
+      player: { direction, x, y: MAX },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x, y - 1)) {
-    return { direction, player: { x, y } }
+    return { player: { direction, x, y, running: true } }
   } else {
-    return { direction, player: { x, y: y - 1 } }
+    return { player: { direction, x, y: y - 1, running: true } }
   }
 }
 
 function moveDown({ room, player }) {
-  const direction = { direction: 'DOWN' }
+  const direction = 'DOWN'
   const { x, y } = player;
 
   if (room.isBorder(x, y + 1)) {
@@ -65,26 +66,26 @@ function moveDown({ room, player }) {
     if (room.down) {
       newRoom = room.down
     } else {
-      newRoom = new Room({ up: room, level: room.level + 1 })
+      newRoom = new Room({ up: room, level: room.level + 1, running: true })
     }
 
     return {
-      direction,
-      player: { x, y: 0 },
+      player: { direction, x, y: 0 },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x, y + 1)) {
-    return { direction, player: { x, y } }
+    return { player: { direction, x, y, running: true } }
   } else {
-    return { direction, player: { x, y: y + 1 } }
+    return { player: { direction, x, y: y + 1, running: true } }
   }
 }
 
 function moveLeft({ room, player }) {
-  const direction = { direction: 'LEFT' }
+  const direction = 'LEFT'
+
   const { x, y } = player;
 
   if (room.isBorder(x - 1, y)) {
@@ -94,26 +95,25 @@ function moveLeft({ room, player }) {
     if (room.left) {
       newRoom = room.left
     } else {
-      newRoom = new Room({ right: room, level: room.level + 1 })
+      newRoom = new Room({ right: room, level: room.level + 1, running: true })
     }
 
     return {
-      direction,
-      player: { x: MAX, y },
+      player: { direction, x: MAX, y },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x - 1, y)) {
-    return { direction, player: { x, y } }
+    return { player: { direction, x, y, running: true } }
   } else {
-    return { direction, player: { x: x - 1, y } }
+    return { player: { direction, x: x - 1, y, running: true } }
   }
 }
 
 function moveRight({ room, player }) {
-  const direction = { direction: 'RIGHT' }
+  const direction = 'RIGHT'
   const { x, y } = player;
 
   if (room.isBorder(x + 1, y)) {
@@ -123,21 +123,21 @@ function moveRight({ room, player }) {
     if (room.right) {
       newRoom = room.right
     } else {
-      newRoom = new Room({ left: room, level: room.level + 1 })
+      newRoom = new Room({ left: room, level: room.level + 1, running: true })
     }
 
     return {
-      direction,
-      player: { x: 0, y },
+
+      player: {direction,  x: 0, y },
       room: newRoom,
       mobs: generateMobs(newRoom),
       treasure: generateTreasures(newRoom),
       level: newRoom.level,
     }
   } else if (room.isBlock(x + 1, y)) {
-    return { direction, player: { x, y } }
+    return { direction, player: { direction, x, y, running: true } }
   } else {
-    return { direction, player: { x: x + 1, y } }
+    return { direction, player: { direction, x: x + 1, y, running: true } }
   }
 }
 
@@ -149,7 +149,7 @@ function newGame(state) {
     room: initRoom,
     mobs: generateMobs(initRoom),
     treasure: generateTreasures(initRoom),
-    player: {x: 5, y: 5, direction: 'UP' },
+    player: {x: 5, y: 5, direction: 'RIGHT' },
     level: initRoom.level,
     coins: 0,
     gameOver: false,
