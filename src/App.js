@@ -17,7 +17,7 @@ function App() {
   const [topScores, setTopScores] = useState([])
 
 
-  const { gameOver, level, coins, pause } = state
+  const { gameOver, room, player, coins, pause } = state
 
   useEffect(() => {
     // const tickId = setInterval(() => {
@@ -34,11 +34,11 @@ function App() {
 
     console.log('tickId on tick', tickId)
 
-    if (!pause && !tickId) {
-      tickId = setInterval(() => {
-        dispatch({ type: 'TICK', tickId })
-      }, 500)
-    }
+    // if (!pause && !tickId) {
+    //   tickId = setInterval(() => {
+    //     dispatch({ type: 'TICK', tickId })
+    //   }, 500)
+    // }
 
 
     return () => {
@@ -49,15 +49,15 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     const now = Date.now();
-    if (gameOver && coins > 0) {
+    if (room && gameOver && coins > 0) {
       await addDoc(collection(db, 'top_scores'), {
         name: 'Test-' + now,
         coins: coins,
-        level: level,
+        level: room.level,
         createdAt: serverTimestamp()
       })
     }
-  }, [gameOver, coins, level])
+  }, [gameOver, coins])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -75,15 +75,10 @@ function App() {
   }
 
   const isGameRunning = () => {
-    if(level)
+    if(room && room.ready)
       return <Grid
-          x={state.x}
-          y={state.y}
-          room={state.room}
-          mobs={state.mobs}
-          player={state.player}
-          treasure={state.treasure}
-          direction={state.direction}
+        room={room}
+        player={player}
         />
   }
 
@@ -91,12 +86,14 @@ function App() {
     <>
       {isGameOver()}
 
-      <div className="header">
-        <div className="level">Level {level}</div>
-        <div className="coins">
-          <img src={treasureImage}></img>Coins {coins}
+      {room && room.ready ?
+        <div className="header">
+          <div className="level">Level {room.level}</div>
+          <div className="coins">
+            <img src={treasureImage}></img>Coins {coins}
+          </div>
         </div>
-      </div>
+      : ''}
 
       {isGameRunning()}
     </>

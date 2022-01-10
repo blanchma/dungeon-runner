@@ -1,7 +1,7 @@
 import { randomPosition } from "../helpers/randomPosition";
 import Treasure from "../models/treasure";
 
-export default function generateTreasures(room) {
+export default function generateTreasure() {
   let x, y;
 
   do  {

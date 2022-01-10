@@ -1,29 +1,44 @@
 import Room from '../models/room'
 import Mob from '../models/mob'
-import generateMobs from '../generators/generateMobs'
-import generateTreasures from '../generators/generateTreasures'
 
 const MAX = 10
 
 function checkCollision(state) {
-  const { treasure, mobs, player, coins, room } = state
+  const { player, coins, room } = state
+  const { treasure, mobs, key } = room
   const { x, y } = player;
 
   if (mobs.some((mob) => mob.x === x && mob.y === y)) {
-    return { ...state, gameOver: true, player: {...player, dead: true} }
+    return {
+      ...state,
+      player: { ...player, dead: true },
+      gameOver: true
+    }
+
   } else if (treasure && treasure.x === x && treasure.y === y) {
-    room.treasure = null
-    return { ...state, treasure: null, coins: coins + treasure.value }
+    return {
+      ...state,
+      room: new Room({ ...room, treasure: null }),
+      coins: coins + treasure.value
+    }
+  } else if (key && key.x === x && key.y === y) {
+    return {
+      ...state,
+      room: new Room({ ...room, key: null })
+    }
   } else {
-    return { ...state, gameOver: false }
+    return {
+      ...state
+    }
   }
 }
 
-function tick({ mobs, room, player }) {
-  const movedMobs = mobs.map((mob) => Mob.move(mob, room))
-  player = { ...player, running: false}
+function tick({ room, player }) {
+  const movedMobs = room.mobs.map((mob) => Mob.move(mob, room))
 
-  return { mobs: movedMobs, player };
+  return {
+    room: new Room({ ...room, mobs: movedMobs })
+  };
 }
 
 function moveUp({ room, player }) {
@@ -31,22 +46,20 @@ function moveUp({ room, player }) {
   const { x, y } = player;
 
   if (room.isBorder(x, y - 1)) {
-    room.current = false
-
     let newRoom
+
     if (room.up) {
       newRoom = room.up
     } else {
-      newRoom = new Room({ down: room, level: room.level + 1, running: true })
+      newRoom = new Room({
+        down: room,
+        level: room.level + 1,
+      })
     }
 
     return {
-      direction,
       player: { direction, x, y: MAX },
-      room: newRoom,
-      mobs: generateMobs(newRoom),
-      treasure: generateTreasures(newRoom),
-      level: newRoom.level,
+      room: newRoom
     }
   } else if (room.isBlock(x, y - 1)) {
     return { player: { direction, x, y, running: true } }
@@ -60,21 +73,20 @@ function moveDown({ room, player }) {
   const { x, y } = player;
 
   if (room.isBorder(x, y + 1)) {
-    room.current = false
 
     let newRoom
     if (room.down) {
       newRoom = room.down
     } else {
-      newRoom = new Room({ up: room, level: room.level + 1, running: true })
+      newRoom = new Room({
+        up: room,
+        level: room.level + 1,
+      })
     }
 
     return {
       player: { direction, x, y: 0 },
-      room: newRoom,
-      mobs: generateMobs(newRoom),
-      treasure: generateTreasures(newRoom),
-      level: newRoom.level,
+      room: newRoom
     }
   } else if (room.isBlock(x, y + 1)) {
     return { player: { direction, x, y, running: true } }
@@ -85,25 +97,24 @@ function moveDown({ room, player }) {
 
 function moveLeft({ room, player }) {
   const direction = 'LEFT'
-
   const { x, y } = player;
 
   if (room.isBorder(x - 1, y)) {
-    room.current = false
 
     let newRoom
     if (room.left) {
       newRoom = room.left
     } else {
-      newRoom = new Room({ right: room, level: room.level + 1, running: true })
+
+      newRoom = new Room({
+        right: room,
+        level: room.level + 1,
+      })
     }
 
     return {
       player: { direction, x: MAX, y },
-      room: newRoom,
-      mobs: generateMobs(newRoom),
-      treasure: generateTreasures(newRoom),
-      level: newRoom.level,
+      room: newRoom
     }
   } else if (room.isBlock(x - 1, y)) {
     return { player: { direction, x, y, running: true } }
@@ -117,22 +128,19 @@ function moveRight({ room, player }) {
   const { x, y } = player;
 
   if (room.isBorder(x + 1, y)) {
-    room.current = false
-
     let newRoom
     if (room.right) {
       newRoom = room.right
     } else {
-      newRoom = new Room({ left: room, level: room.level + 1, running: true })
+      newRoom = new Room({
+        left: room,
+        level: room.level + 1,
+      })
     }
 
     return {
-
       player: {direction,  x: 0, y },
       room: newRoom,
-      mobs: generateMobs(newRoom),
-      treasure: generateTreasures(newRoom),
-      level: newRoom.level,
     }
   } else if (room.isBlock(x + 1, y)) {
     return { direction, player: { direction, x, y, running: true } }
@@ -142,15 +150,13 @@ function moveRight({ room, player }) {
 }
 
 function newGame(state) {
+
   const initRoom = new Room()
 
   return {
     pause: false,
     room: initRoom,
-    mobs: generateMobs(initRoom),
-    treasure: generateTreasures(initRoom),
     player: {x: 5, y: 5, direction: 'RIGHT' },
-    level: initRoom.level,
     coins: 0,
     gameOver: false,
     tickId: state.tickId

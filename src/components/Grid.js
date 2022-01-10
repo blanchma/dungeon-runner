@@ -5,11 +5,13 @@ const gridSize = 11;
 
 const Grid = (props) => {
     let grid = []
-    const { room, mobs, treasure, player } = props;
+    const { room, player } = props;
+    const { mobs, treasure, key } = room;
+
     for (let i = 0; i < (gridSize * gridSize); i++) {
         let cellX = i % gridSize
         let cellY = parseInt(i / gridSize)
-        const cellContent = getCellContent({x: cellX, y: cellY, room, player, mobs, treasure})
+        const cellContent = getCellContent({x: cellX, y: cellY, room, player, mobs, treasure, key})
         const cellClass = getCellClass({x: cellX, y: cellY, room})
 
         grid.push(
@@ -26,7 +28,7 @@ const Grid = (props) => {
     )
 }
 
-function getCellContent({ x, y, room, player, mobs, treasure }) {
+function getCellContent({ x, y, player, mobs, treasure, key }) {
     const content = []
     if (player.x === x && player.y === y) {
         const reversed = player.direction === 'UP' || player.direction === 'LEFT';
@@ -44,6 +46,10 @@ function getCellContent({ x, y, room, player, mobs, treasure }) {
 
     if (treasure && treasure.x === x && treasure.y === y) {
         content.push( createElement("div", { className: `coin coin-${treasure.number}` }) )
+    }
+
+    if (key && key.x === x && key.y === y) {
+        content.push( createElement("div", { className: 'key' }) )
     }
 
     return content;

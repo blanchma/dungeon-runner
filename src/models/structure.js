@@ -1,57 +1,21 @@
-import generateKey from '../generators/generateKey';
-import generateMobs from '../generators/generateMobs';
-import generateTreasures from '../generators/generateTreasure';
-
 class Room {
   static max = 11;
 
-  constructor({ mobs, treasure, up = null, down = null, right = null, left = null, level = 1, ready = false, grid, topBorder, bottomBorder, leftBorder, rightBorder, key } = {}) {
-    this.level = level;
-    this.grid = grid || Array(Room.max).fill(Array(Room.max).fill(0));
-
-    this.topBorder = topBorder;
-    this.bottomBorder = bottomBorder;
-    this.leftBorder = leftBorder;
-    this.rightBorder = rightBorder;
-
+  constructor({ up = null, down = null, right = null, left = null, treasure, mobs, level = 1 } = {}) {
+    this.grid = Array(Room.max).fill( Array(Room.max).fill(0) );
     this.up = up;
     this.down = down;
     this.left = left;
     this.right = right;
-
-    this.mobs = mobs
+    this.level = level;
+    this.mobs = mobs;
     this.treasure = treasure;
-    this.ready = ready;
-    this.key = key;
-
     this.generate();
   }
 
   generate() {
-    if (!this.ready) {
-      this.generateBorders()
-      this.generateMobs()
-      this.generateTreasure()
-      this.generateKey()
-      this.ready = true;
-    }
-  }
-
-  generateMobs() {
-    this.mobs = generateMobs(this)
-  }
-
-  generateTreasure() {
-    this.treasure = generateTreasures(this)
-  }
-
-  generateKey() {
-    this.key = generateKey(this)
-  }
-
-  generateBorders() {
     const max = Room.max, half = 5
-    let doors = 1, tempGrid = JSON.parse(JSON.stringify(this.grid));
+    let doors = 0, tempGrid = JSON.parse(JSON.stringify(this.grid));
 
     this.topBorder = this.up ? this.up.bottomBorder : Array(max).fill(1);
     this.bottomBorder = this.down ? this.down.topBorder : Array(max).fill(1);
@@ -59,15 +23,19 @@ class Room {
     this.rightBorder = this.right ? this.right.leftBorder : Array(max).fill(1);
 
     const borders = [this.topBorder,
-    this.bottomBorder]
-
+    this.bottomBorder,
+    this.leftBorder,
+    this.rightBorder]
 
     while (doors < 2) {
-      const randomBorder = Math.floor(Math.random() * 2)
-      const border = borders[randomBorder];
-      if (border.indexOf(0) < 0) {
-        border[half] = 0
-        doors += 1
+      const randomNumber = parseInt(Math.random() * 10)
+      for (const border of borders) {
+        if (border.indexOf(0) > -1) {
+          doors += 1
+        } else if (randomNumber >= 4) {
+          border[half] = 0
+          doors += 1
+        }
       }
     }
 
@@ -85,6 +53,7 @@ class Room {
 
     this.grid = tempGrid;
   }
+
 
   isWall(x, y) {
     return this.grid[y][x] === 1;
@@ -110,7 +79,7 @@ class Room {
     return (x === 0 && y === 0) || (x === 10 && y === 0)
   }
 
-  isBorder(x, y) {
+  isOpen(x, y) {
     return this.isLimit(x, y); //&& !(this.isWall(x, y));
   }
 
