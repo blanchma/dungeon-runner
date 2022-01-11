@@ -5,7 +5,7 @@ import generateTreasures from '../generators/generateTreasure';
 class Room {
   static max = 11;
 
-  constructor({ mobs, treasure, up = null, down = null, right = null, left = null, level = 1, ready = false, grid, topBorder, bottomBorder, leftBorder, rightBorder, key } = {}) {
+  constructor({ mobs, treasure, up = null, down = null, right = null, left = null, level = 1, ready = false, grid, topBorder, bottomBorder, leftBorder, rightBorder, door, key } = {}) {
     this.level = level;
     this.grid = grid || Array(Room.max).fill(Array(Room.max).fill(0));
 
@@ -23,6 +23,7 @@ class Room {
     this.treasure = treasure;
     this.ready = ready;
     this.key = key;
+    this.door = door;
 
     this.generate();
   }
@@ -51,7 +52,7 @@ class Room {
 
   generateBorders() {
     const max = Room.max, half = 5
-    let doors = 1, tempGrid = JSON.parse(JSON.stringify(this.grid));
+    let doors = 0, tempGrid = JSON.parse(JSON.stringify(this.grid));
 
     this.topBorder = this.up ? this.up.bottomBorder : Array(max).fill(1);
     this.bottomBorder = this.down ? this.down.topBorder : Array(max).fill(1);
@@ -62,12 +63,13 @@ class Room {
     this.bottomBorder]
 
 
-    while (doors < 2) {
+    while (doors < 1) {
       const randomBorder = Math.floor(Math.random() * 2)
       const border = borders[randomBorder];
-      if (border.indexOf(0) < 0) {
-        border[half] = 0
+      if (border.indexOf(2) < 0) {
+        border[half] = 2
         doors += 1
+        this.door = border === this.topBorder ? { x: half, y: 0} : { x: half, y: Room.max - 1}
       }
     }
 
@@ -110,12 +112,20 @@ class Room {
     return (x === 0 && y === 0) || (x === 10 && y === 0)
   }
 
-  isBorder(x, y) {
+  isExit(x, y) {
     return this.isLimit(x, y); //&& !(this.isWall(x, y));
   }
 
+  isCloseExit(x, y) {
+    return this.isExit(x,y) && this.grid[y][x] === 2;
+  }
+
+  isOpenExit(x, y) {
+    return this.isExit(x,y) && this.grid[y][x] === 0;
+  }
+
   isLimit(x, y) {
-    return (x >= Room.max || y >= Room.max || x < 0 || y < 0);
+    return (x >= (Room.max - 1) || y >= (Room.max - 1) || x <= 0 || y <= 0);
   }
 
   isBlock(x, y) {

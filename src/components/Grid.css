@@ -93,7 +93,7 @@
 .h-wall {
   background-image: url('../assets/walls/wall_1.png'), url('../assets/land.png');
   background-repeat: no-repeat, repeat;
-  background-size: 55px 55px;
+  background-size: contain;
 }
 
 .v-wall {
@@ -120,6 +120,15 @@
 
 .wall {
   border: none;
+}
+
+.door {
+  border: none;
+  background-image: url('../assets/decor_13.png'),
+    url('../assets/walls/wall_1.png'), url('../assets/land.png');
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 55px 65px;
+  transform: scale(1.2);
 }
 
 .mob {
@@ -160,7 +169,7 @@
   height: 55px;
   line-height: 55px;
   background-repeat: no-repeat;
-  background-size: 20px;
+  background-size: 15px;
   background-position: center;
   background-color: transparent;
 }

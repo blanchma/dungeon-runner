@@ -9,8 +9,6 @@ export default function generateKey(room) {
     validPosition = validatePosition(x, y, room);
   } while (!validPosition)
 
-  console.log(`Key ${x} ${y}`)
-
   return new Key({ x, y });
 }
 

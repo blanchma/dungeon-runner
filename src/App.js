@@ -34,11 +34,11 @@ function App() {
 
     console.log('tickId on tick', tickId)
 
-    // if (!pause && !tickId) {
-    //   tickId = setInterval(() => {
-    //     dispatch({ type: 'TICK', tickId })
-    //   }, 500)
-    // }
+    if (!pause && !tickId) {
+      tickId = setInterval(() => {
+        dispatch({ type: 'TICK', tickId })
+      }, 500)
+    }
 
 
     return () => {

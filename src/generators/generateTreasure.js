@@ -7,6 +7,5 @@ export default function generateTreasure() {
   do  {
     [x, y] = randomPosition();
   } while ([x, y] === [5, 5])
-  console.log(`Treasure ${x} ${y}`)
   return new Treasure({ x, y });
 }

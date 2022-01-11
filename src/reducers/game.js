@@ -16,15 +16,17 @@ function checkCollision(state) {
     }
 
   } else if (treasure && treasure.x === x && treasure.y === y) {
+
     return {
       ...state,
-      room: new Room({ ...room, treasure: null }),
+      room: new Room({ ...room, treasure: null,  }),
       coins: coins + treasure.value
     }
   } else if (key && key.x === x && key.y === y) {
+
     return {
       ...state,
-      room: new Room({ ...room, key: null })
+      room: new Room({ ...room, door: null, key: null })
     }
   } else {
     return {
@@ -45,7 +47,7 @@ function moveUp({ room, player }) {
   const direction = 'UP'
   const { x, y } = player;
 
-  if (room.isBorder(x, y - 1)) {
+  if (room.isExit(x, y - 1)) {
     let newRoom
 
     if (room.up) {
@@ -72,7 +74,7 @@ function moveDown({ room, player }) {
   const direction = 'DOWN'
   const { x, y } = player;
 
-  if (room.isBorder(x, y + 1)) {
+  if (room.isOpenExit(x, y + 1) || (room.isCloseExit(x, y + 1) && !room.key) ) {
 
     let newRoom
     if (room.down) {
@@ -88,7 +90,7 @@ function moveDown({ room, player }) {
       player: { direction, x, y: 0 },
       room: newRoom
     }
-  } else if (room.isBlock(x, y + 1)) {
+  } else if (room.isBlock(x, y + 1) || room.isCloseExit(x, y + 1)) {
     return { player: { direction, x, y, running: true } }
   } else {
     return { player: { direction, x, y: y + 1, running: true } }
@@ -99,7 +101,7 @@ function moveLeft({ room, player }) {
   const direction = 'LEFT'
   const { x, y } = player;
 
-  if (room.isBorder(x - 1, y)) {
+  if (room.isOpenExit(x - 1, y) || (room.isCloseExit(x - 1, y) && !room.key) ) {
 
     let newRoom
     if (room.left) {
@@ -127,7 +129,7 @@ function moveRight({ room, player }) {
   const direction = 'RIGHT'
   const { x, y } = player;
 
-  if (room.isBorder(x + 1, y)) {
+  if (room.isExit(x + 1, y)) {
     let newRoom
     if (room.right) {
       newRoom = room.right
