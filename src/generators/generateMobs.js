@@ -47,8 +47,8 @@ function getAllPossiblePositions() {
 export default function generateMobs(room) {
   const level = room.level;
   const mobs = []
-  let mobsMax = parseInt(level / 5) + 3;
-  mobsMax = mobsMax > 10 ? 10 : mobsMax;
+  let mobsMax = parseInt(level / 2) + 3;
+  mobsMax = mobsMax > 15 ? 15 : mobsMax;
 
   const allPositions = getAllPossiblePositions();
 

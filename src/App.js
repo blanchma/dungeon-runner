@@ -37,7 +37,7 @@ function App() {
     if (!pause && !tickId) {
       tickId = setInterval(() => {
         dispatch({ type: 'TICK', tickId })
-      }, 500)
+      }, 400)
     }
 
 
