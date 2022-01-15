@@ -8,73 +8,119 @@ import treasureImage from './assets/decor_18.png'
 
 //mover a un hook
 import { db } from './firebase/config'
-import { collection, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore'
+//https://firebase.google.com/docs/reference/js/
+import { collection, query, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore'
 
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, {})
   useKeyboard(dispatch)
   const [topScores, setTopScores] = useState([])
-
-
-  const { gameOver, room, player, coins, pause } = state
+  const [playerName, setPlayerName] = useState("")
+  const { gameOver, room, player, coins } = state
 
   useEffect(() => {
-    // const tickId = setInterval(() => {
-    //     dispatch({ type: 'TICK' })
-    // }, 500)
-    // console.log('tickId on start', tickId)
     dispatch({ type: 'NEW_GAME' })
-
-
   }, [dispatch])
 
   useEffect(() => {
     let tickId;
 
-    console.log('tickId on tick', tickId)
-
-    if (!pause && !tickId) {
+    if (!gameOver) {
       tickId = setInterval(() => {
         dispatch({ type: 'TICK', tickId })
       }, 400)
     }
 
-
     return () => {
       clearInterval(tickId)
     }
-  }, [pause])
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
-    const now = Date.now();
-    if (room && gameOver && coins > 0) {
-      await addDoc(collection(db, 'top_scores'), {
-        name: 'Test-' + now,
-        coins: coins,
-        level: room.level,
-        createdAt: serverTimestamp()
-      })
-    }
-  }, [gameOver, coins])
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(async () => {
-    const newTopScores = await getDocs(collection(db, 'top_scores'), orderBy("score"), limit(10))
-
-    let docs = []
-    newTopScores.forEach((doc) => {
-      docs.push({ id: doc.id, data: doc.data() })
-    })
-    setTopScores(docs)
   }, [gameOver])
 
-  const isGameOver = () => {
-    if (gameOver) return <div className="gameOver">GAME OVER</div>
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    getTopScores()
+  }, [gameOver])
+
+
+  const getTopScores = async () => {
+    const q = query(collection(db, 'top_scores'), orderBy("coins", "desc"), limit(10));
+
+    const newTopScores = await getDocs(q)
+
+    let docs = []
+
+    newTopScores.forEach((doc) => {
+      docs.push({ id: doc.id, ...doc.data() })
+    })
+
+    setTopScores(docs)
   }
 
-  const isGameRunning = () => {
+  const scoreGoodEnough = () => {
+    return coins && topScores &&
+      (topScores.length < 10 ||
+        topScores[topScores.length - 1].coins < coins);
+  }
+
+  const handlePlayerNameChange = (event) => {
+    setPlayerName(event.target.value);
+  }
+
+  const submitNewScore = async (event) => {
+    event.preventDefault();
+    if (playerName !== "") {
+      addDoc(collection(db, 'top_scores'), {
+          name: playerName,
+          coins: coins,
+          level: room.level,
+          createdAt: serverTimestamp()
+      })
+      dispatch({ type: 'NEW_GAME' })
+    }
+  }
+
+  const showGameOver = () => {
+    if (gameOver) {
+      let gameOverContent;
+      if (scoreGoodEnough()) {
+        gameOverContent = <>
+          <div className="gameOverInfo">
+            Congratulations!
+            Your score is high enough to enter the Hall of Fame
+          </div>
+          <form onSubmit={submitNewScore}>
+            <label>
+              Introduce your name:
+              <input
+                type="text"
+                value={playerName}
+                onChange={handlePlayerNameChange}
+                maxLength="12"
+              />
+            </label>
+            <input type="submit" value=" SUBMIT " />
+          </form>
+          <div className="gameOverInfo">Press ENTER to start a new game</div>
+        </>
+      } else {
+        gameOverContent = (<>
+          <div className="gameOverInfo">Press ENTER to start a new game</div>
+        </>)
+      }
+
+      return (
+        <div className="gameOver">
+          <div className="newTopScore">
+            <div className="title">GAME OVER</div>
+            {gameOverContent}
+          </div>
+        </div>
+      )
+    }
+  }
+
+  const showGameRunning = () => {
     if(room && room.ready)
       return <Grid
         room={room}
@@ -82,9 +128,24 @@ function App() {
         />
   }
 
+  const showTopScores = () => {
+    const scores = topScores.map(score => {
+      return <li className="score" key={score.id}>
+        <div className="name">{score.name}</div>
+        <div className="coins">{score.coins}</div>
+        </li>
+    })
+
+    return <div className="topScores">
+        <div className="title">Hall of Fame</div>
+        <ul className="list">{scores}</ul>
+      </div>
+  }
+
   return (
-    <>
-      {isGameOver()}
+    <div className="game">
+      {showGameOver()}
+      {showTopScores()}
 
       {room && room.ready ?
         <div className="header">
@@ -95,8 +156,9 @@ function App() {
         </div>
       : ''}
 
-      {isGameRunning()}
-    </>
+      {showGameRunning()}
+
+    </div>
   )
 }
 

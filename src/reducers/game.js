@@ -35,7 +35,11 @@ function checkCollision(state) {
   }
 }
 
-function tick({ room, player }) {
+function tick(state) {
+  if (state.gameOver) {
+    return { ...state };
+  }
+  const { room } = state;
   const movedMobs = room.mobs.map((mob) => Mob.move(mob, room))
 
   return {
@@ -43,11 +47,15 @@ function tick({ room, player }) {
   };
 }
 
-function moveUp({ room, player }) {
+function moveUp(state) {
+  if (state.gameOver) {
+    return { ...state };
+  }
+  const { room, player } = state;
   const direction = 'UP'
   const { x, y } = player;
 
-  if (room.isExit(x, y - 1)) {
+  if (room.isOpenExit(x, y - 1) || (room.isCloseExit(x, y - 1) && !room.key) ) {
     let newRoom
 
     if (room.up) {
@@ -70,7 +78,11 @@ function moveUp({ room, player }) {
   }
 }
 
-function moveDown({ room, player }) {
+function moveDown(state) {
+  if (state.gameOver) {
+    return { ...state };
+  }
+  const { room, player } = state;
   const direction = 'DOWN'
   const { x, y } = player;
 
@@ -97,7 +109,11 @@ function moveDown({ room, player }) {
   }
 }
 
-function moveLeft({ room, player }) {
+function moveLeft(state) {
+  if (state.gameOver) {
+    return { ...state };
+  }
+  const { room, player } = state;
   const direction = 'LEFT'
   const { x, y } = player;
 
@@ -125,11 +141,15 @@ function moveLeft({ room, player }) {
   }
 }
 
-function moveRight({ room, player }) {
+function moveRight(state) {
+  if (state.gameOver) {
+    return { ...state };
+  }
+  const { room, player } = state;
   const direction = 'RIGHT'
   const { x, y } = player;
 
-  if (room.isExit(x + 1, y)) {
+  if (room.isOpenExit(x + 1, y)) {
     let newRoom
     if (room.right) {
       newRoom = room.right
@@ -165,44 +185,21 @@ function newGame(state) {
   }
 }
 
-function pause({tickId}) {
-  console.log('pause', pause, ' TICK', tickId)
-  if (tickId) {
-    clearInterval(tickId)
-    return {pause: true}
-  } else {
-    return {pause: false}
-  }
-
-}
-
 function gameReducer(state, action) {
-  if (state.gameOver) {
-    return state
-  }
-  switch (action.type) {
 
-    case 'PAUSE':
-      return { ...state, ...pause(state) };
-      break;
+  switch (action.type) {
     case 'NEW_GAME':
       return { ...state, ...newGame({ ...state, ...action.payload }) };
-      break
     case 'UP':
       return checkCollision({ ...state, ...moveUp(state) })
-      break
     case 'DOWN':
       return checkCollision({ ...state, ...moveDown(state) })
-      break
     case 'LEFT':
       return checkCollision({ ...state, ...moveLeft(state) })
-      break
     case 'RIGHT':
       return checkCollision({ ...state, ...moveRight(state) })
-      break
     case 'TICK':
       return checkCollision({ ...state, ...tick(state) })
-      break
     default:
       throw new Error()
   }

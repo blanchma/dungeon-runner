@@ -9,22 +9,6 @@ body {
   word-spacing: 0.2em;
 }
 
-.gameOver {
-  position: fixed;
-  top: 45%;
-  left: 52%;
-  transform: translate(-50%, -50%);
-  width: 30%;
-  background-color: #4e4c52;
-  font-size: 200%;
-  line-height: 55px;
-  vertical-align: middle;
-  text-align: center;
-  z-index: 100;
-  opacity: 0.5;
-  color: white;
-}
-
 .header {
   width: 40%;
   margin: 0 auto;
@@ -32,20 +16,114 @@ body {
   line-height: 40px;
 }
 
-.coins {
+.header .coins {
+  font-weight: bold;
   display: inline;
   float: right;
   text-align: left;
 }
 
-.coins img {
+.header .coins img {
   height: 30px;
   width: 30px;
   vertical-align: middle;
 }
 
-.level {
+.header .level {
+  font-weight: bold;
   display: inline;
   float: left;
   text-align: left;
+}
+
+.topScores {
+  font-weight: bold;
+  float: right;
+  width: 10em;
+  font-size: 90%;
+  padding: 2em;
+}
+
+.topScores .title {
+  text-align: center;
+  font-weight: bold;
+  color: #b94951;
+}
+
+.topScores .name {
+  text-align: left;
+  float: left;
+}
+
+.topScores .coins {
+  text-align: right;
+  margin-left: 1em;
+  float: right;
+}
+
+.topScores .list {
+  padding: 10px;
+}
+
+.topScores .score {
+  display: inline-block;
+  font-weight: 100;
+  width: 100%;
+}
+
+.gameOver {
+  position: fixed;
+  top: 45%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  background-color: #4e4c52;
+  line-height: 55px;
+  vertical-align: middle;
+  text-align: center;
+  z-index: 100;
+  opacity: 0.75;
+  font-size: 200%;
+}
+
+.gameOver .newTopScore {
+  font-size: 40%;
+  line-height: 21px;
+  width: 300px;
+  margin: 0 auto;
+  color: white;
+  opacity: 1;
+}
+
+.newTopScore .title {
+  font-size: 300%;
+  line-height: 55px;
+  vertical-align: middle;
+  text-align: center;
+  z-index: 100;
+  opacity: 1;
+  color: #b94951;
+}
+
+.newTopScore form {
+  font-family: 'Enchanted Land', 'Pushster', sans-serif !important;
+  margin: 5px;
+  padding: 5px 25px;
+}
+
+.newTopScore input[type='text'] {
+  font-size: 150%;
+  font-family: 'Enchanted Land', 'Pushster', sans-serif !important;
+  margin: 5px;
+  padding: 5px 25px;
+}
+
+.newTopScore input[type='submit'] {
+  font-size: 150%;
+  border: solid black;
+  display: block;
+  margin: 5px auto;
+  font-family: 'Enchanted Land', 'Pushster', sans-serif !important;
+  font-weight: bold;
+  padding: 5px 25px;
 }
