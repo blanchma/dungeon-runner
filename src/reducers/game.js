@@ -26,7 +26,7 @@ function checkCollision(state) {
 
     return {
       ...state,
-      room: new Room({ ...room, door: null, key: null })
+      room: new Room({ ...room, key: null })
     }
   } else {
     return {
@@ -55,7 +55,7 @@ function moveUp(state) {
   const direction = 'UP'
   const { x, y } = player;
 
-  if (room.isOpenExit(x, y - 1) || (room.isCloseExit(x, y - 1) && !room.key) ) {
+  if (room.isExit(x, y - 1)) {
     let newRoom
 
     if (room.up) {
@@ -86,7 +86,7 @@ function moveDown(state) {
   const direction = 'DOWN'
   const { x, y } = player;
 
-  if (room.isOpenExit(x, y + 1) || (room.isCloseExit(x, y + 1) && !room.key) ) {
+  if (room.isExit(x, y + 1)) {
 
     let newRoom
     if (room.down) {
@@ -102,7 +102,7 @@ function moveDown(state) {
       player: { direction, x, y: 0 },
       room: newRoom
     }
-  } else if (room.isBlock(x, y + 1) || room.isCloseExit(x, y + 1)) {
+  } else if (room.isBlock(x, y + 1) ) {
     return { player: { direction, x, y, running: true } }
   } else {
     return { player: { direction, x, y: y + 1, running: true } }
@@ -117,24 +117,7 @@ function moveLeft(state) {
   const direction = 'LEFT'
   const { x, y } = player;
 
-  if (room.isOpenExit(x - 1, y) || (room.isCloseExit(x - 1, y) && !room.key) ) {
-
-    let newRoom
-    if (room.left) {
-      newRoom = room.left
-    } else {
-
-      newRoom = new Room({
-        right: room,
-        level: room.level + 1,
-      })
-    }
-
-    return {
-      player: { direction, x: MAX, y },
-      room: newRoom
-    }
-  } else if (room.isBlock(x - 1, y)) {
+  if (room.isBlock(x - 1, y)) {
     return { player: { direction, x, y, running: true } }
   } else {
     return { player: { direction, x: x - 1, y, running: true } }
@@ -149,22 +132,7 @@ function moveRight(state) {
   const direction = 'RIGHT'
   const { x, y } = player;
 
-  if (room.isOpenExit(x + 1, y)) {
-    let newRoom
-    if (room.right) {
-      newRoom = room.right
-    } else {
-      newRoom = new Room({
-        left: room,
-        level: room.level + 1,
-      })
-    }
-
-    return {
-      player: {direction,  x: 0, y },
-      room: newRoom,
-    }
-  } else if (room.isBlock(x + 1, y)) {
+  if (room.isBlock(x + 1, y)) {
     return { direction, player: { direction, x, y, running: true } }
   } else {
     return { direction, player: { direction, x: x + 1, y, running: true } }

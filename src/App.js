@@ -29,7 +29,7 @@ function App() {
     if (!gameOver) {
       tickId = setInterval(() => {
         dispatch({ type: 'TICK', tickId })
-      }, 400)
+      }, 100)
     }
 
     return () => {

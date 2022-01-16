@@ -66,7 +66,7 @@ function getCellClass({ room, x, y }) {
         return 'wall v-wall left-wall'
     } else if (room.isRightWall(x, y)) {
         return 'wall v-wall right-wall'
-    } else if (room.door && room.door.x === x && room.door.y === y) {
+    } else if (room.door.x === x && room.door.y === y && room.key) {
         return 'door'
     } else {
         return 'floor'

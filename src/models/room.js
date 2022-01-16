@@ -52,25 +52,37 @@ class Room {
 
   generateBorders() {
     const max = Room.max, half = 5
-    let doors = 0, tempGrid = JSON.parse(JSON.stringify(this.grid));
+    let tempGrid = JSON.parse(JSON.stringify(this.grid));
 
-    this.topBorder = this.up ? this.up.bottomBorder : Array(max).fill(1);
-    this.bottomBorder = this.down ? this.down.topBorder : Array(max).fill(1);
-    this.leftBorder = this.left ? this.left.rightBorder : Array(max).fill(1);
-    this.rightBorder = this.right ? this.right.leftBorder : Array(max).fill(1);
+    if (this.up) {
+      this.topBorder = this.up.bottomBorder
+      this.topBorder[half] = 0
+    } else {
+      this.topBorder = Array(max).fill(1);
+    }
+
+    if (this.down) {
+      this.bottomBorder = this.down.topBorder
+      this.bottomBorder[half] = 0
+    } else {
+      this.bottomBorder = Array(max).fill(1);
+    }
+
+    this.leftBorder = Array(max).fill(1);
+    this.rightBorder = Array(max).fill(1);
 
     const borders = [this.topBorder,
     this.bottomBorder]
 
-
-    while (doors < 1) {
+    while (!this.door) {
       const randomBorder = Math.floor(Math.random() * 2)
       const border = borders[randomBorder];
-      if (border.indexOf(2) < 0) {
+
+      if (border.indexOf(0) < 0) {
         border[half] = 2
-        doors += 1
-        this.door = border === this.topBorder ? { x: half, y: 0} : { x: half, y: Room.max - 1}
+        this.door = border === this.topBorder ? { x: half, y: 0 } : { x: half, y: Room.max - 1 }
       }
+
     }
 
     tempGrid[0] = this.topBorder;
@@ -113,19 +125,24 @@ class Room {
   }
 
   isExit(x, y) {
-    return this.isLimit(x, y); //&& !(this.isWall(x, y));
+    return (this.isDoor(x, y) && !this.key) ||
+      this.isOpen(x, y) || this.isOutside(x, y);
   }
 
-  isCloseExit(x, y) {
-    return this.isExit(x,y) && this.grid[y][x] === 2;
+  isDoor(x, y) {
+    return this.isLimit(x,y) && this.grid[y][x] === 2
   }
 
-  isOpenExit(x, y) {
-    return this.isExit(x,y) && this.grid[y][x] === 0;
+  isOpen(x, y) {
+    return this.isLimit(x,y) && this.grid[y][x] === 0;
+  }
+
+  isOutside(x, y) {
+    return (x > (Room.max - 1) || y > (Room.max - 1) || x < 0 || y < 0);
   }
 
   isLimit(x, y) {
-    return (x >= (Room.max - 1) || y >= (Room.max - 1) || x <= 0 || y <= 0);
+    return (x === (Room.max - 1) || y === (Room.max - 1) || x === 0 || y === 0);
   }
 
   isBlock(x, y) {

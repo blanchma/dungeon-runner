@@ -50,13 +50,14 @@ export default function generateMobs(room) {
   let mobsMax = parseInt(level / 2) + 3;
   mobsMax = mobsMax > 15 ? 15 : mobsMax;
 
+  const levelSpeed = parseInt(level / 5)
+  const speed = [5,4,3,2,1][levelSpeed > 4 ? 4 : levelSpeed]
   const allPositions = getAllPossiblePositions();
-
   const axis = [0, 1]
   for (let i = 0; i < mobsMax; i++) {
     const randomPosition = allPositions[i % 4].pop()
     const direction = randomDirection()
-    const newMob = new Mob({ speed: 500, direction, ...randomPosition });
+    const newMob = new Mob({ speed, direction, ...randomPosition });
     mobs.push(newMob)
     axis.reverse()
   }
