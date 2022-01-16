@@ -14,8 +14,16 @@ class Room {
     this.leftBorder = leftBorder;
     this.rightBorder = rightBorder;
 
-    this.up = up;
-    this.down = down;
+    if (up) {
+      this.up = up
+      up.down = this;
+    }
+
+    if (down) {
+      this.down = down;
+      down.up = this;
+    }
+
     this.left = left;
     this.right = right;
 
@@ -30,6 +38,7 @@ class Room {
 
   generate() {
     if (!this.ready) {
+      console.log('new Room', this.level)
       this.generateBorders()
       this.generateMobs()
       this.generateTreasure()

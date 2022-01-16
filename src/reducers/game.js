@@ -59,14 +59,14 @@ function moveUp(state) {
     let newRoom
 
     if (room.up) {
-      newRoom = room.up
+      newRoom = new Room({ ...room.up })
     } else {
       newRoom = new Room({
         down: room,
         level: room.level + 1,
       })
     }
-
+    console.log('newRoom', { ...newRoom })
     return {
       player: { direction, x, y: MAX },
       room: newRoom
@@ -90,7 +90,7 @@ function moveDown(state) {
 
     let newRoom
     if (room.down) {
-      newRoom = room.down
+      newRoom = new Room({ ...room.down })
     } else {
       newRoom = new Room({
         up: room,
@@ -98,6 +98,7 @@ function moveDown(state) {
       })
     }
 
+    console.log('newRoom', { ...newRoom })
     return {
       player: { direction, x, y: 0 },
       room: newRoom

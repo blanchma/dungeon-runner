@@ -11,7 +11,7 @@ body {
 
 .header {
   width: 40%;
-  margin: 0 auto;
+  margin: 10px auto 5px auto;
   height: 40px;
   line-height: 40px;
 }
@@ -62,7 +62,8 @@ body {
 }
 
 .topScores .list {
-  padding: 10px;
+  padding: 5px 10px;
+  margin: 0 auto;
 }
 
 .topScores .score {
